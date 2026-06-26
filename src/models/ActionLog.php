@@ -207,7 +207,7 @@ class ActionLog extends ActiveRecord
         $tableName = self::normalizeTableName($this->table_name);
         $modelName = self::dashesToCamelCase($tableName);
 
-        foreach (self::modelNamespaces as $modelNamespace) {
+        foreach (self::$modelNamespaces as $modelNamespace) {
             $class = $modelNamespace . $modelName;
             if (class_exists($class, true)) {
                 $modelObject = Yii::createObject(['class' => $class]);
