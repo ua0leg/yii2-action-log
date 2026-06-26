@@ -22,6 +22,10 @@ trait LoggableActiveRecordTrait
             return;
         }
 
+        if ($changedAttributes === []) {
+            return;
+        }
+
         ActionLog::add(
             static::tableName(),
             (int) $this->id,

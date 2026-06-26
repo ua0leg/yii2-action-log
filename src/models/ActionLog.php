@@ -40,6 +40,8 @@ class ActionLog extends ActiveRecord
     /** @var list<int> */
     public static array $excludedUserIds = [];
 
+    public static bool $skipEmptyUpdates = true;
+
     public static function configure(array $config): void
     {
         foreach ($config as $key => $value) {
@@ -115,14 +117,22 @@ class ActionLog extends ActiveRecord
 
         $beforeJson = self::encodeSnapshot($before);
         $afterJson = self::encodeSnapshot($after);
-        if ($action === self::ACTION_UPDATE && $beforeJson !== null && $afterJson !== null) {
+        if ($action === self::ACTION_UPDATE) {
             $beforeArr = self::decodeSnapshot($beforeJson);
-            $afterArr = self::decodeSnapshot($afterJson);
-            $newAfter = [];
-            foreach ($beforeArr as $key => $value) {
-                $newAfter[$key] = $afterArr[$key] ?? null;
+            if (static::$skipEmptyUpdates && $beforeArr === []) {
+                return false;
             }
-            $afterJson = self::encodeSnapshot($newAfter);
+            if ($beforeJson !== null && $afterJson !== null) {
+                $afterArr = self::decodeSnapshot($afterJson);
+                $newAfter = [];
+                foreach ($beforeArr as $key => $value) {
+                    $newAfter[$key] = $afterArr[$key] ?? null;
+                }
+                $afterJson = self::encodeSnapshot($newAfter);
+            }
+            if (static::$skipEmptyUpdates && self::diffRows($beforeJson, $afterJson) === []) {
+                return false;
+            }
         }
 
         $log->action = $action;

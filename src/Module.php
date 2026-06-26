@@ -18,6 +18,9 @@ class Module extends BaseModule
     /** @var list<int> User IDs excluded from list/stat queries */
     public array $excludedUserIds = [];
 
+    /** Skip update logs when nothing changed or diff is empty */
+    public bool $skipEmptyUpdates = true;
+
     public int $pageSize = 100;
 
     public function init(): void
@@ -30,6 +33,7 @@ class Module extends BaseModule
             'userModelClass'    => $this->userModelClass,
             'modelNamespaces'   => $this->modelNamespaces,
             'excludedUserIds'   => $this->excludedUserIds,
+            'skipEmptyUpdates'  => $this->skipEmptyUpdates,
         ]);
     }
 }
