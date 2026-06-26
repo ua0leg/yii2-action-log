@@ -19,5 +19,9 @@
     "require": {
         "php": ">=8.2",
         "yiisoft/yii2": "~2.0.45"
+    },
+    "support": {
+        "issues": "https://github.com/ua0leg/yii2-action-log/issues",
+        "source": "https://github.com/ua0leg/yii2-action-log"
     }
 }
