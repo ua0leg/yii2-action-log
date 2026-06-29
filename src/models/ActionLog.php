@@ -105,7 +105,7 @@ class ActionLog extends ActiveRecord
     {
         $action = array_key_exists($action, self::actionsFilter()) ? $action : self::ACTION_VIEW;
         $log = new self();
-        $log->table_name = $table_name;
+        $log->table_name = self::normalizeTableName($table_name);
         $log->id_model = $id_pk;
         $log->id_user = 0;
         if (Yii::$app->has('user')) {
@@ -246,8 +246,8 @@ class ActionLog extends ActiveRecord
         if ($tableName === null || $tableName === '') {
             return '';
         }
-        if (strncmp($tableName, '{{%', 3) === 0 && substr($tableName, -2) === '}}') {
-            return substr($tableName, 3, -2);
+        if (preg_match('/^\{\{%?([^}]+)\}\}$/', $tableName, $matches)) {
+            return $matches[1];
         }
 
         return $tableName;
